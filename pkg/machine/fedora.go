@@ -98,7 +98,22 @@ func getFedoraDownload() (*url.URL, string, string, int64, error) {
 		return nil, "", "", -1, fmt.Errorf("invalid URL generated from discovered Fedora file: %s: %w", releaseURL, err)
 	}
 
-	proxyUrl, _ := url.Parse(os.Getenv("HTTP_PROXY"))
+	proxyEnvsTypos := []string{
+		"http_proxy",
+		"HTTP_PROXY",
+		"https_proxy",
+		"HTTPS_PROXY",
+	}
+	var proxyUrl *url.URL
+
+	for _, s := range proxyEnvsTypos {
+		u, OK := os.LookupEnv(s)
+		if OK {
+			proxyUrl, _ = url.Parse(u)
+			break
+		}
+	}
+
 	client := &http.Client{
 		Transport: &http.Transport{
 			Proxy: http.ProxyURL(proxyUrl),
