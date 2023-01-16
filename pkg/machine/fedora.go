@@ -98,7 +98,14 @@ func getFedoraDownload() (*url.URL, string, string, int64, error) {
 		return nil, "", "", -1, fmt.Errorf("invalid URL generated from discovered Fedora file: %s: %w", releaseURL, err)
 	}
 
-	resp, err := http.Head(releaseURL)
+	proxyUrl, _ := url.Parse(os.Getenv("HTTP_PROXY"))
+	client := &http.Client{
+		Transport: &http.Transport{
+			Proxy: http.ProxyURL(proxyUrl),
+		},
+	}
+
+	resp, err := client.Head(releaseURL)
 	if err != nil {
 		return nil, "", "", -1, fmt.Errorf("head request failed: %s: %w", releaseURL, err)
 	}
@@ -112,7 +119,7 @@ func getFedoraDownload() (*url.URL, string, string, int64, error) {
 	verURL := *downloadURL
 	verURL.Path = path.Join(path.Dir(downloadURL.Path), "version")
 
-	resp, err = http.Get(verURL.String())
+	resp, err = client.Get(verURL.String())
 	if err != nil {
 		return nil, "", "", -1, fmt.Errorf("get request failed: %s: %w", verURL.String(), err)
 	}
