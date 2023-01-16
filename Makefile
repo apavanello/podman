@@ -353,6 +353,7 @@ podman: bin/podman
 .PHONY: podman-remote
 podman-remote: $(SRCBINDIR)/podman$(BINSFX)
 
+
 $(SRCBINDIR)/quadlet: $(SOURCES) go.mod go.sum
 	$(GOCMD) build \
 		$(BUILDFLAGS) \
