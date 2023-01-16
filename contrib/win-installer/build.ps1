@@ -43,7 +43,7 @@ function SignItem() {
 
     CheckCommand AzureSignTool.exe "AzureSignTool"
 
-    AzureSignTool.exe sign -du "https://github.com/containers/podman" `
+    AzureSignTool.exe sign -du "https://github.com/apavanello/podman" `
         -kvu "https://$ENV:VAULT_ID.vault.azure.net" `
         -kvi $ENV:APP_ID `
         -kvt $ENV:TENANT_ID `
